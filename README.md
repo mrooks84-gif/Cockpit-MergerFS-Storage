@@ -29,6 +29,6 @@ The Commands below and plugin have only been tested on Ubuntu Server.
 # Download change folder permission
 ` sudo chmod -R 755 /usr/share/cockpit/mergerfs-storage `
 # Restart Cockpit
-` sudo systemctl restart cockpit '
+` sudo systemctl restart cockpit `
 
 
