@@ -1,0 +1,13 @@
+{
+    "version": "1.0",
+    "label": "MergerFS Storage",
+    "menu": {
+        "index": {
+            "label": "MergerFS Storage",
+            "order": 10
+        }
+    },
+    "permissions": {
+        "allow-terminating": true
+    }
+}
