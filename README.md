@@ -12,6 +12,8 @@ Stat Cards: Clearly separated boxes showing the exact gigabytes/terabytes of you
 
 Trend Logging: Automatically records one usage point every 24 hours (saved in browser storage) to build a 40-day trend line.
 
+The Commands below and plugin have only been tested on Ubuntu Server.
+
 # Create the plugin directory
 ` sudo mkdir -p /usr/share/cockpit/mergerfs-storage `
 # Download chart.min.js
@@ -26,5 +28,7 @@ Trend Logging: Automatically records one usage point every 24 hours (saved in br
 ` sudo chown -R root:root /usr/share/cockpit/mergerfs-storage `
 # Download change folder permission
 ` sudo chmod -R 755 /usr/share/cockpit/mergerfs-storage `
+# Restart Cockpit
+` sudo systemctl restart cockpit '
 
 
