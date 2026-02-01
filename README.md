@@ -12,11 +12,6 @@ Stat Cards: Clearly separated boxes showing the exact gigabytes/terabytes of you
 
 Trend Logging: Automatically records one usage point every 24 hours (saved in browser storage) to build a 40-day trend line.
 
-
-
-# 1. The Setup (Terminal Commands)
-First, create the directory and download the required chart library that makes the visuals possible.
-
 # Create the plugin directory
 ` sudo mkdir -p /usr/share/cockpit/mergerfs-storage `
 # Download chart.min.js
