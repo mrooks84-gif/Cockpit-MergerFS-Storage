@@ -1,4 +1,7 @@
 # Cockpit-MergerFS-Storage
+
+![Screenshot of MergerFS Storage.]([https://myoctocat.com/assets/images/base-octocat.svg](https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/raw/refs/heads/main/screenshot.png)
+
 A custom Cockpit plugin that auto-detects MergerFS pools. It provides a real-time visual breakdown of storage and tracks usage trends over a rolling 40-day period.
 I am only a beginner and really needed this feature, i couldent find one that anyone else has created so i built one with the help of ai, i hope it helps others.
 Anyone is welcome to make changes.
