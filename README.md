@@ -12,17 +12,17 @@ Stat Cards: Clearly separated boxes showing the exact gigabytes/terabytes of you
 
 Trend Logging: Automatically records one usage point every 24 hours (saved in browser storage) to build a 40-day trend line.
 
-1. The Setup (Terminal Commands)
+
+
+# 1. The Setup (Terminal Commands)
 First, create the directory and download the required chart library that makes the visuals possible.
 
-# Create the plugin directory
-sudo mkdir -p /usr/share/cockpit/mergerfs-storage
-
-# Download the essential Chart.js library
-sudo wget https://cdn.jsdelivr.net/npm/chart.js -O /usr/share/cockpit/mergerfs-storage/chart.min.js
-
-# Set the correct permissions so Cockpit can run the files
-sudo chown -R root:root /usr/share/cockpit/mergerfs-storage
-sudo chmod -R 755 /usr/share/cockpit/mergerfs-storage
+`code` sudo mkdir -p /usr/share/cockpit/mergerfs-storage
+`code` sudo wget https://cdn.jsdelivr.net/npm/chart.js -O /usr/share/cockpit/mergerfs-storage/chart.min.js
+`code` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/blob/main/index.html -O /usr/share/cockpit/mergerfs-storage/index.html
+`code` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/blob/main/manifest.json -O /usr/share/cockpit/mergerfs-storage/manifest.json
+`code` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/blob/main/script.js -O /usr/share/cockpit/mergerfs-storage/script.js
+`code` sudo chown -R root:root /usr/share/cockpit/mergerfs-storage
+`code` sudo chmod -R 755 /usr/share/cockpit/mergerfs-storage
 
 
