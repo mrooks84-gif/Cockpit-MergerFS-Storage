@@ -19,11 +19,11 @@ The Commands below and plugin have only been tested on Ubuntu Server.
 # Download chart.min.js
 ` sudo wget https://cdn.jsdelivr.net/npm/chart.js -O /usr/share/cockpit/mergerfs-storage/chart.min.js `
 # Download index.html
-` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/blob/main/index.html -O /usr/share/cockpit/mergerfs-storage/index.html `
+` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/raw/refs/heads/main/index.html -O /usr/share/cockpit/mergerfs-storage/index.html `
 # Download manifest.json
-` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/blob/main/manifest.json -O /usr/share/cockpit/mergerfs-storage/manifest.json `
+` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/raw/refs/heads/main/manifest.json -O /usr/share/cockpit/mergerfs-storage/manifest.json `
 # Download script.js
-` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/blob/main/script.js -O /usr/share/cockpit/mergerfs-storage/script.js `
+` sudo wget https://github.com/mrooks84-gif/Cockpit-MergerFS-Storage/raw/refs/heads/main/script.js -O /usr/share/cockpit/mergerfs-storage/script.js `
 # Download change folder owner to root
 ` sudo chown -R root:root /usr/share/cockpit/mergerfs-storage `
 # Download change folder permission
