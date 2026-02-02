@@ -1,13 +1,10 @@
 {
     "version": "1.0",
-    "label": "MergerFS Storage",
+    "label": "NonRAID & MergerFS",
     "menu": {
         "index": {
-            "label": "MergerFS Storage",
+            "label": "Storage Pool",
             "order": 10
         }
-    },
-    "permissions": {
-        "allow-terminating": true
     }
 }
