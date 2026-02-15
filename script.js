@@ -2,12 +2,12 @@ let TARGET_PATH = "";
 let storageChart, historyChart;
 let historyData = JSON.parse(localStorage.getItem('mergerfs_trend_40')) || [];
 let balanceProcess = null; 
+let dupProcess = null;
 
 function cleanTerminalOutput(text) {
     return text.replace(/\x1B\[[0-9;]*[JKmsu]/g, '').trim();
 }
 
-// --- 1. ARRAY STORAGE DISK GRID ---
 async function updateHardwareGrid() {
     const container = document.getElementById("disk-health-grid");
     const parityCheckRow = document.getElementById("parity-check-container");
@@ -40,9 +40,7 @@ async function updateHardwareGrid() {
                 const dev = parts[2];
                 
                 let usagePercent = "";
-                parts.forEach(p => {
-                    if (p.includes('%')) usagePercent = p;
-                });
+                parts.forEach(p => { if (p.includes('%')) usagePercent = p; });
                 
                 let smartInfo = "Loading SMART data...";
                 try {
@@ -66,7 +64,6 @@ function generateDiskTile(slot, dev, rawStatus, usage, isParity, smartInfo) {
     const isOk = rawStatus.includes("OK");
     const dot = isOk ? "🟢" : "🔴";
     const statusLabel = isOk ? "Online" : "Offline";
-    
     let color = "#1e8e3e";
     let usageDisplay = "";
 
@@ -78,9 +75,7 @@ function generateDiskTile(slot, dev, rawStatus, usage, isParity, smartInfo) {
         const pNum = parseInt(usage);
         if (pNum > 90) color = "#d20000";
         else if (pNum > 75) color = "#f0ad4e";
-    } else {
-        usageDisplay = "ACTIVE DATA";
-    }
+    } else { usageDisplay = "ACTIVE DATA"; }
 
     return `
         <table ${css}>
@@ -93,15 +88,12 @@ function generateDiskTile(slot, dev, rawStatus, usage, isParity, smartInfo) {
                     <div style="color: ${color}; font-size: 0.9rem; font-weight: bold;">
                         ${usageDisplay}
                     </div>
-                    <div style="font-size: 0.7rem; color: #888; margin-top: 5px;">
-                        Status: ${statusLabel}
-                    </div>
+                    <div style="font-size: 0.7rem; color: #888; margin-top: 5px;">Status: ${statusLabel}</div>
                 </td>
             </tr>
         </table>`;
 }
 
-// --- 2. TRENDS & CHARTING ---
 function recordTrendData(p) {
     const day = new Date().toLocaleDateString();
     let h = JSON.parse(localStorage.getItem('mergerfs_trend_40')) || [];
@@ -122,27 +114,8 @@ function initCharts() {
     if (storageCtx) {
         storageChart = new Chart(storageCtx, {
             type: 'doughnut',
-            data: { 
-                labels: ['Used', 'Free'], 
-                datasets: [{ data: [0, 100], backgroundColor: ['#0066cc', '#3e8635'], borderWidth: 0 }] 
-            },
-            options: { 
-                cutout: '75%', 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                plugins: { 
-                    legend: { display: false },
-                    tooltip: {
-                        displayColors: false,
-                        callbacks: {
-                            title: () => '',
-                            label: function(context) {
-                                return context.raw + '% ' + context.label;
-                            }
-                        }
-                    }
-                } 
-            }
+            data: { labels: ['Used', 'Free'], datasets: [{ data: [0, 100], backgroundColor: ['#0066cc', '#3e8635'], borderWidth: 0 }] },
+            options: { cutout: '75%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { displayColors: false, callbacks: { title: () => '', label: (c) => c.raw + '% ' + c.label } } } }
         });
     }
     const historyCtx = document.getElementById('historyChart');
@@ -150,45 +123,22 @@ function initCharts() {
         historyChart = new Chart(historyCtx, {
             type: 'line',
             data: { labels: historyData.map(d => d.date), datasets: [{ data: historyData.map(d => d.val), borderColor: '#0066cc', fill: true, tension: 0.3 }] },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                scales: { y: { beginAtZero: true, max: 100 } }, 
-                plugins: { 
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) { return context.raw + '% Used'; }
-                        }
-                    }
-                } 
-            }
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => c.raw + '% Used' } } } }
         });
     }
 }
 
 async function updateSpace() {
-    if (!TARGET_PATH || TARGET_PATH === "Not Found") {
-        TARGET_PATH = await findPath();
-    }
+    if (!TARGET_PATH || TARGET_PATH === "Not Found") TARGET_PATH = await findPath();
     try {
         const out = await cockpit.spawn(["df", "-h", TARGET_PATH]);
         const s = out.trim().split('\n').pop().split(/\s+/);
         const p = parseInt(s[4]);
-        
-        const usedVal = s[2].replace(/[a-zA-Z]/g, '') + " TB";
-        const freeVal = s[3].replace(/[a-zA-Z]/g, '') + " TB";
-        const totalVal = s[1].replace(/[a-zA-Z]/g, '') + " TB";
-
-        document.getElementById("used-text").innerText = usedVal + " (" + p + "%)";
-        document.getElementById("avail-text").innerText = freeVal;
-        document.getElementById("size-text").innerText = totalVal;
+        document.getElementById("used-text").innerText = s[2].replace(/[a-zA-Z]/g, '') + " TB (" + p + "%)";
+        document.getElementById("avail-text").innerText = s[3].replace(/[a-zA-Z]/g, '') + " TB";
+        document.getElementById("size-text").innerText = s[1].replace(/[a-zA-Z]/g, '') + " TB";
         document.getElementById("path-display").innerText = TARGET_PATH;
-        
-        if (storageChart) {
-            storageChart.data.datasets[0].data = [p, 100 - p];
-            storageChart.update();
-        }
+        if (storageChart) { storageChart.data.datasets[0].data = [p, 100 - p]; storageChart.update(); }
         recordTrendData(p);
         updateHardwareGrid(); 
     } catch (e) {}
@@ -203,6 +153,7 @@ async function findPath() {
 }
 
 function setupButtons() {
+    // Balancing Logic
     const startBtn = document.getElementById("btn-start-balance");
     const stopBtn = document.getElementById("btn-stop-balance");
     const statusBox = document.getElementById("balance-status-box");
@@ -215,16 +166,33 @@ function setupButtons() {
                 balanceProcess.stream(data => { statusBox.innerText = "> " + data.trim().split('\n').pop(); });
                 await balanceProcess;
                 statusBox.innerText = "> Complete.";
-                updateSpace(); resetUI();
-            } catch (err) { statusBox.innerText = "> Stopped."; resetUI(); }
+            } catch (err) { statusBox.innerText = "> Stopped."; }
+            startBtn.disabled = false; stopBtn.disabled = true;
         };
     }
     if (stopBtn) stopBtn.onclick = () => { if (balanceProcess) balanceProcess.close(); };
-    function resetUI() { startBtn.disabled = false; stopBtn.disabled = true; }
+
+    // Duplication Logic
+    const startDupBtn = document.getElementById("btn-start-dup");
+    const stopDupBtn = document.getElementById("btn-stop-dup");
+    const dupStatusBox = document.getElementById("dup-status-box");
+    if (startDupBtn) {
+        startDupBtn.onclick = async () => {
+            dupStatusBox.innerText = "> Running mergerfs.dup -c 2 -p ...";
+            startDupBtn.disabled = true; stopDupBtn.disabled = false;
+            try {
+                dupProcess = cockpit.spawn(["mergerfs.dup", "-c", "2", "-p", TARGET_PATH], { superuser: "require", err: "out" });
+                dupProcess.stream(data => { dupStatusBox.innerText = "> " + data.trim().split('\n').pop(); });
+                await dupProcess;
+                dupStatusBox.innerText = "> Duplication Complete (2 copies enforced).";
+            } catch (err) { dupStatusBox.innerText = "> Duplication Stopped."; }
+            startDupBtn.disabled = false; stopDupBtn.disabled = true;
+        };
+    }
+    if (stopDupBtn) stopDupBtn.onclick = () => { if (dupProcess) dupProcess.close(); };
 }
 
 window.onload = async () => {
-    initCharts(); setupButtons();
-    updateSpace();
+    initCharts(); setupButtons(); updateSpace();
     setInterval(updateSpace, 30000); 
 };
